@@ -41,6 +41,15 @@ router.get('/posts/:post', function (req, res) {
 	res.json(req.post);
 });
 
+/* Increment (CREATE) upvotes on Post */
+router.put('/posts/:post/upvote', function (req, res, next) {
+	req.post.upvote(function (err, post) {
+		if (err) { return next(err); }
+
+		res.json(post);
+	});
+});
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
