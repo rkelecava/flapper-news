@@ -27,7 +27,13 @@ homeModule.controller('MainCtrl', ['$scope', 'posts', function ($scope, posts) {
 		$scope.link = '';
 	};
 
+	/* Before wiring to Node 
 	$scope.incrementUpvotes = function (post) {
 		post.upvotes +=1;
+	};
+	*/
+	/*After wiring to Node*/
+	$scope.incrementUpvotes = function (post) {
+		posts.upvote(post);
 	};
 }]);
