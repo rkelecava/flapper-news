@@ -49,11 +49,6 @@ router.param('comment', function (req, res, next, id) {
 	});
 });
 
-/* GET (RETRIEVE) a Single Post */
-router.get('/posts/:post', function (req, res) {
-	res.json(req.post);
-});
-
 /* GET (RETRIEVE) a Single Comment */
 router.get('/posts/:post/comments/:comment', function (req, res) {
 	res.json(req.comment);
@@ -90,6 +85,15 @@ router.post('/posts/:post/comments', function (req, res, next) {
 			if (err) { return next(err); }
 			res.json(comment);
 		});
+	});
+});
+
+/* GET (RETRIEVE) comments along with posts */
+router.get('/posts/:post', function (req, res, next) {
+	req.post.populate('comments', function(err, post) {
+		if (err) { return next(err); }
+
+		res.json(post);
 	});
 });
 
