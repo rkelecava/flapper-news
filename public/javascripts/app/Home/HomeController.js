@@ -5,6 +5,8 @@ homeModule.controller('MainCtrl', ['$scope', 'posts', function ($scope, posts) {
 
 	$scope.addPost = function () {
 		if (!$scope.title || $scope.title === '') { return; }
+		
+		/* Before wiring to Node 
 		$scope.posts.push({
 			title: $scope.title,
 			link: $scope.link,
@@ -14,6 +16,13 @@ homeModule.controller('MainCtrl', ['$scope', 'posts', function ($scope, posts) {
     			{author: 'Bob', body: 'Great idea but everything is wrong!', upvotes: 0}
   			]
 		});
+		*/
+		/* After wiring to Node */
+		posts.create({
+			title: $scope.title,
+			link: $scope.link
+		});
+		
 		$scope.title = '';
 		$scope.link = '';
 	};
