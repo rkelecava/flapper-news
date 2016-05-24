@@ -5,11 +5,22 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+if(!process.env.FLAPPER_JWT_SECRET) {
+  var env = require('./env.js');
+}
+
 var mongoose = require('mongoose');
+var passport = require('passport');
+
+require('./models/Users');
 require('./models/Posts');
 require('./models/Comments');
 
+require('./config/passport');
+
 mongoose.connect('mongodb://localhost/flapperNews');
+
+
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
@@ -27,6 +38,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(passport.initialize());
 
 app.use('/', routes);
 app.use('/posts', routes);
