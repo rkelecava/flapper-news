@@ -3,10 +3,16 @@ var router = express.Router();
 
 var mongoose = require('mongoose');
 var passport = require('passport');
+var jwt = require('express-jwt');
 
 var Post = mongoose.model('Post');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
+
+var auth = jwt({
+	secret: process.env.FLAPPER_JWT_SECRET,
+	userProperty: 'payload'
+});
 
 /* GET (RETRIEVE) all posts */
 router.get('/posts', function (req, res, next) {
@@ -17,8 +23,9 @@ router.get('/posts', function (req, res, next) {
 });
 
 /* ADD (CREATE) a new post */
-router.post('/posts', function (req, res, next) {
+router.post('/posts', auth, function (req, res, next) {
 	var post = new Post(req.body);
+	post.author = req.payload.username;
 
 	post.save(function (err, post) {
 		if (err) { return next(err); }
@@ -58,7 +65,7 @@ router.get('/posts/:post/comments/:comment', function (req, res) {
 });
 
 /* Increment (UPDATE) upvotes on Post */
-router.put('/posts/:post/upvote', function (req, res, next) {
+router.put('/posts/:post/upvote', auth, function (req, res, next) {
 	req.post.upvote(function (err, post) {
 		if (err) { return next(err); }
 
@@ -67,7 +74,7 @@ router.put('/posts/:post/upvote', function (req, res, next) {
 });
 
 /* Increment (UPDATE) upvotes on Comment */
-router.put('/posts/:post/comments/:comment/upvote', function (req, res, next) {
+router.put('/posts/:post/comments/:comment/upvote', auth, function (req, res, next) {
 	req.comment.upvote(function (err, comment) {
 		if (err) { return next(err); }
 
@@ -76,9 +83,10 @@ router.put('/posts/:post/comments/:comment/upvote', function (req, res, next) {
 });
 
 /* ADD (CREATE) comments on Post */
-router.post('/posts/:post/comments', function (req, res, next) {
+router.post('/posts/:post/comments', auth, function (req, res, next) {
 	var comment = new Comment(req.body);
 	comment.post = req.post;
+	comment.author = req.payload.username;
 
 	comment.save(function (err, comment) {
 		if (err) { return next(err); }
