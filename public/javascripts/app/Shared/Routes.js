@@ -30,5 +30,31 @@ routes.config([
 						}
 					]
 				}
+			})
+			.state('login', {
+				url: '/login',
+				templateUrl: '/javascripts/app/Authentication/_login.html',
+				controller: 'AuthCtrl',
+				onEnter: [
+					'$state',
+					'auth',
+					function ($state, auth) {
+						if (auth.isLoggedIn()) {
+							$state.go('home');
+						}
+					}]
+			})
+			.state('register', {
+				url: '/register',
+				templateUrl: '/javascripts/app/Authentication/_register.html',
+				controller: 'AuthCtrl',
+				onEnter: [
+					'$state',
+					'auth',
+					function ($state, auth) {
+						if (auth.isLoggedIn()) {
+							$state.go('home');
+						}
+					}]
 			});
 	}]);
